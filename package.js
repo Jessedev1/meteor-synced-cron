@@ -1,6 +1,6 @@
 Package.describe({
   summary: "Define and run scheduled jobs across multiple servers.",
-  version: "3.0.0",
+  version: "3.0.1",
   name: "jessedev:synced-cron",
   git: "https://github.com/jessedev/meteor-synced-cron.git"
 });
