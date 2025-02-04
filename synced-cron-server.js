@@ -24,7 +24,7 @@ SyncedCron = {
   }
 }
 
-Later = Npm.require('later');
+Later = Npm.require('@breejs/later');
 
 /*
   Logger factory function. Takes a prefix string and options object
@@ -87,11 +87,12 @@ Meteor.startup(function() {
 
   // collection holding the job history records
   SyncedCron._collection = new Mongo.Collection(options.collectionName);
-  SyncedCron._collection._ensureIndex({intendedAt: 1, name: 1}, {unique: true});
+  SyncedCron._collection.rawCollection().createIndex({intendedAt: 1}, {unique: true});
+  SyncedCron._collection.rawCollection().createIndex({name: 1}, {unique: true});
 
   if (options.collectionTTL) {
     if (options.collectionTTL > minTTL)
-      SyncedCron._collection._ensureIndex({startedAt: 1 },
+      SyncedCron._collection.rawCollection().createIndex({startedAt: 1 },
         { expireAfterSeconds: options.collectionTTL } );
     else
       log.warn('Not going to use a TTL that is shorter than:' + minTTL);
@@ -264,7 +265,7 @@ SyncedCron._reset = function() {
 //   time the callback function *should* be run (so we can co-ordinate jobs)
 //   between multiple, potentially laggy and unsynced machines
 
-// From: https://github.com/bunkat/later/blob/master/src/core/setinterval.js
+// From: https://github.com/breejs/later/blob/master/src/index.js
 SyncedCron._laterSetInterval = function(fn, sched) {
 
   var t = SyncedCron._laterSetTimeout(scheduleTimeout, sched),
@@ -300,7 +301,7 @@ SyncedCron._laterSetInterval = function(fn, sched) {
 
 };
 
-// From: https://github.com/bunkat/later/blob/master/src/core/settimeout.js
+// From: https://github.com/breejs/later/blob/master/src/index.js
 SyncedCron._laterSetTimeout = function(fn, sched) {
 
   var s = Later.schedule(sched), t;
